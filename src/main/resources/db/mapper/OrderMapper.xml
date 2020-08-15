@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.galaxy.mecury.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.galaxy.mecury.entity.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="good_id" jdbcType="INTEGER" property="goodId" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, good_id, count, created_time, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from orders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.galaxy.mecury.entity.Order">
+    insert into orders (id, user_id, good_id, 
+      count, created_time, updated_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodId,jdbcType=INTEGER}, 
+      #{count,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.galaxy.mecury.entity.Order">
+    insert into orders
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="goodId != null">
+        good_id,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="goodId != null">
+        #{goodId,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.galaxy.mecury.entity.Order">
+    update orders
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="goodId != null">
+        good_id = #{goodId,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.galaxy.mecury.entity.Order">
+    update orders
+    set user_id = #{userId,jdbcType=INTEGER},
+      good_id = #{goodId,jdbcType=INTEGER},
+      count = #{count,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectAllByPrimaryKey" resultMap="orderDetailMap">
+    select
+    o.*, u.*, g.*
+    from orders o
+    INNER JOIN goods g ON o.good_id = g.id
+    INNER JOIN users u ON o.user_id = u.id
+    where o.id = #{id,jdbcType=INTEGER}
+    </select>
+  
+  <resultMap id="orderDetailMap" type="com.galaxy.mecury.entity.Order" extends="BaseResultMap">
+    <association property="user" javaType="com.galaxy.mecury.entity.User">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="username" jdbcType="VARCHAR" property="username" />
+      <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+      <result column="email" jdbcType="VARCHAR" property="email" />
+      <result column="sex" jdbcType="SMALLINT" property="sex" />
+      <result column="password" jdbcType="VARCHAR" property="password" />
+      <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+      <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </association>
+    <association property="good" javaType="com.galaxy.mecury.entity.Good">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="price" jdbcType="INTEGER" property="price" />
+      <result column="unit" jdbcType="SMALLINT" property="unit" />
+      <result column="merchant_id" jdbcType="INTEGER" property="merchantId" />
+      <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+      <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </association>
+  </resultMap>
+</mapper>
